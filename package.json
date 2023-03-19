@@ -1,0 +1,30 @@
+{
+  "name": "execution-manager",
+  "version": "0.1.0",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "type": "module",
+  "files": [
+    "build",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "start": "node ./build/index.js",
+    "dev": "nodemon ./src/index.ts -r dotenv/config",
+    "build": "tsc",
+    "test": "jest"
+  },
+  "author": "RafaelDoering",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^28.1.4",
+    "@types/node": "^18.0.3",
+    "jest": "^28.1.2",
+    "nodemon": "^2.0.19",
+    "ts-jest": "^28.0.5",
+    "ts-node": "^10.8.2",
+    "typescript": "^4.7.4"
+  }
+}
