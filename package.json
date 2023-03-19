@@ -16,6 +16,10 @@
     "build": "tsc",
     "test": "jest"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RafaelDoering/money-handling.git"
+  },
   "author": "RafaelDoering",
   "license": "ISC",
   "devDependencies": {
