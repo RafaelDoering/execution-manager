@@ -1,6 +1,7 @@
 {
   "name": "execution-manager",
   "version": "0.1.0",
+  "description": "A promise manager",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "type": "module",
@@ -13,8 +14,14 @@
   "scripts": {
     "start": "node ./build/index.js",
     "dev": "nodemon ./src/index.ts -r dotenv/config",
-    "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -25,6 +32,10 @@
   "devDependencies": {
     "@types/jest": "^28.1.4",
     "@types/node": "^18.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "eslint": "^7.32.0",
+    "eslint-config-google": "^0.14.0",
+    "gts": "^3.1.0",
     "jest": "^28.1.2",
     "nodemon": "^2.0.19",
     "ts-jest": "^28.0.5",

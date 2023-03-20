@@ -1,5 +1,5 @@
 {
-  "files": ["src/index.ts"],
+  "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
     "moduleResolution":"node",
     "target": "es2015",
@@ -7,5 +7,9 @@
     "types": ["node", "jest"],
     "declaration": true,
     "esModuleInterop": true,
-  }
+  },
+  "include": [
+    "src/**/*.ts",
+  ],
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

@@ -1,14 +1,14 @@
-export type Context = { [key: string]: any };
+export type Context = {[key: string]: unknown};
 
 export type Execution = {
   contextKey: string;
-  call: (context: Context) => any;
+  call: (context: Context) => unknown;
   contextDependencies?: string[];
 };
 
 export default class ExecutionManager {
   private context: Context = {};
-  private executionsByLevel: { [key: number]: Array<Execution> } = { 0: [] };
+  private executionsByLevel: {[key: number]: Array<Execution>} = {0: []};
 
   constructor(context?: Context) {
     if (context) {
@@ -24,14 +24,16 @@ export default class ExecutionManager {
       execution.contextDependencies.forEach((contextDependency: string) => {
         const executionsWithLevel = Object.entries(this.executionsByLevel);
         const dependency = executionsWithLevel.find(([level, executions]) => {
-          const foundDependency = executions.find((item) => item.contextKey === contextDependency);
+          const foundDependency = executions.find(
+            item => item.contextKey === contextDependency
+          );
 
           if (foundDependency) {
             dependenciesLevel.push(+level);
           }
 
           return foundDependency;
-        })
+        });
 
         if (!dependency && !this.context[contextDependency]) {
           throw 'Dependencia não encontrada';
@@ -49,7 +51,6 @@ export default class ExecutionManager {
       this.executionsByLevel[0].push(execution);
     }
 
-
     return this;
   }
 
@@ -57,7 +58,9 @@ export default class ExecutionManager {
     const executionsByLevel = Object.values(this.executionsByLevel);
 
     for (const executionInLevel of executionsByLevel) {
-      const responses = await Promise.all(executionInLevel.map(execution => execution.call(this.context)));
+      const responses = await Promise.all(
+        executionInLevel.map(execution => execution.call(this.context))
+      );
 
       for (const [index, response] of responses.entries()) {
         this.context[executionInLevel[index].contextKey] = response;

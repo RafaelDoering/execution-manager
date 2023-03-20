@@ -1,4 +1,4 @@
-import ExecutionManager, { Context } from './index';
+import ExecutionManager, {Context} from './index';
 
 test('execute should return nothing when called without add execution', async () => {
   const subject = new ExecutionManager();
@@ -44,7 +44,7 @@ test('execute should return context with execution result when called after add 
   }).addExecution({
     contextKey: 'test2',
     call: () => {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         setTimeout(() => {
           resolve(2);
         }, 10);
@@ -87,34 +87,38 @@ test('addExecution should pass context to call ', async () => {
 test('addExecution should throw error when called with a non existent dependency', async () => {
   const subject = new ExecutionManager();
 
-  expect(() => subject.addExecution({
-    contextKey: 'test1',
-    call: () => {
-      return 1;
-    },
-    contextDependencies: ['test'],
-  })).toThrowError();
+  expect(() =>
+    subject.addExecution({
+      contextKey: 'test1',
+      call: () => {
+        return 1;
+      },
+      contextDependencies: ['test'],
+    })
+  ).toThrowError();
 });
 
 test('execute should return context with executions result when called after add execution with dependency', async () => {
   const subject = new ExecutionManager({
     test1: 1,
-  }).addExecution({
-    contextKey: 'test2',
-    call: () => {
-      return 2;
-    },
-  }).addExecution({
-    contextKey: 'test3',
-    call: (context: Context) => {
-      return {
-        result1: context.test1,
-        result2: context.test2,
-        result3: 3,
-      };
-    },
-    contextDependencies: ['test1', 'test2'],
-  });
+  })
+    .addExecution({
+      contextKey: 'test2',
+      call: () => {
+        return 2;
+      },
+    })
+    .addExecution({
+      contextKey: 'test3',
+      call: (context: Context) => {
+        return {
+          result1: context.test1,
+          result2: context.test2,
+          result3: 3,
+        };
+      },
+      contextDependencies: ['test1', 'test2'],
+    });
 
   const result = await subject.execute();
 
@@ -130,39 +134,42 @@ test('execute should return context with executions result when called after add
 });
 
 test('execute should return context with executions result when called after add execution with promises and dependencies', async () => {
-  const subject = new ExecutionManager().addExecution({
-    contextKey: 'test1',
-    call: () => {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve(1);
-        }, 10);
-      });
-    },
-  }).addExecution({
-    contextKey: 'test2',
-    call: () => {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve(2);
-        }, 15);
-      });
-    },
-  }).addExecution({
-    contextKey: 'test3',
-    call: (context: Context) => {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve({
-            result1: context.test1,
-            result2: context.test2,
-            result3: 3,
-          });
-        }, 5);
-      });
-    },
-    contextDependencies: ['test1', 'test2'],
-  });
+  const subject = new ExecutionManager()
+    .addExecution({
+      contextKey: 'test1',
+      call: () => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve(1);
+          }, 10);
+        });
+      },
+    })
+    .addExecution({
+      contextKey: 'test2',
+      call: () => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve(2);
+          }, 15);
+        });
+      },
+    })
+    .addExecution({
+      contextKey: 'test3',
+      call: (context: Context) => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve({
+              result1: context.test1,
+              result2: context.test2,
+              result3: 3,
+            });
+          }, 5);
+        });
+      },
+      contextDependencies: ['test1', 'test2'],
+    });
 
   const result = await subject.execute();
 
