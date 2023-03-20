@@ -1,29 +1,78 @@
-# executin-manager
+# Execution Manager
 
-## Installation
+A promise manager
 
-Com Node e NPM instalados no seu computador, instale as dependencias do projeto:
+## Features
+
+- Resolve Promises in concurrently
+- Works also with conventional functions
+- Manage dependencies between executions
+- Typescript support
+
+## Installing
+
+Using npm:
+
 ```bash
-npm install
+$ npm install execution-manager
 ```
 
-## Running
+## Example
 
-Faça o build da aplicação:
-```bash
-npm run build
-```
+```typescript
+import ExecutionManager from 'execution-manager';
 
-Execute a aplicação:
-```bash
-npm run start
-```
+// Instantiate manager
+const manager = new ExecutionManager();
 
-## Development
+// Add executions
+manager.addExecution({
+  contextKey: 'test1',
+  call: () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(1);
+      }, 10);
+    });
+  },
+}).addExecution({
+  contextKey: 'test2',
+  call: () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(2);
+      }, 15);
+    });
+  },
+}).addExecution({
+  contextKey: 'test3',
+  call: (context: Context) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({
+          result1: context.test1,
+          result2: context.test2,
+          result3: 3,
+        });
+      }, 5);
+    });
+  },
+  contextDependencies: ['test1', 'test2'],
+});
 
-Execute a aplicação:
-```bash
-npm run dev
+// Get result
+const result = await subject.execute();
+
+console.log(result);
+// {
+//   test1: 1,
+//   test2: 2,
+//   test3: {
+//     result1: 1,
+//     result2: 2,
+//     result3: 3,
+//   },
+// }
 ```
 
 ## License
