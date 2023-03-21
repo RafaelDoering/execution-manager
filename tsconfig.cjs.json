@@ -3,7 +3,6 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "build",
-    "declaration": true,
     "declarationMap": false,
     "sourceMap": false,
     "removeComments": true

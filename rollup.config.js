@@ -6,7 +6,7 @@ export default {
     {
       file: 'build/index.mjs',
       format: 'es',
-      sourcemap: false,
+      sourcemap: true,
     },
     {
       file: 'build/index.umd.js',
@@ -18,7 +18,7 @@ export default {
   plugins: [
     typescript({
       tsconfig: 'tsconfig.esm.json',
-      sourceMap: false,
+      sourceMap: true,
     }),
   ],
 };
