@@ -1,6 +1,8 @@
-import ExecutionManager, {Context} from './index';
+import { expect, test } from "@jest/globals";
 
-test('execute should return nothing when called without add execution', async () => {
+import ExecutionManager, { Context } from "./index";
+
+test("execute should return nothing when called without add execution", async () => {
   const subject = new ExecutionManager();
 
   const result = await subject.execute();
@@ -8,7 +10,7 @@ test('execute should return nothing when called without add execution', async ()
   expect(result).toStrictEqual({});
 });
 
-test('execute should return initial context when called without add execution', async () => {
+test("execute should return initial context when called without add execution", async () => {
   const subject = new ExecutionManager({
     test1: 1,
   });
@@ -20,11 +22,11 @@ test('execute should return initial context when called without add execution', 
   });
 });
 
-test('execute should return context with execution result when called after add execution', async () => {
+test("execute should return context with execution result when called after add execution", async () => {
   const subject = new ExecutionManager({
     test1: 1,
   }).addExecution({
-    contextKey: 'test2',
+    contextKey: "test2",
     call: () => {
       return 2;
     },
@@ -38,13 +40,13 @@ test('execute should return context with execution result when called after add 
   });
 });
 
-test('execute should return context with execution result when called after add execution with promise', async () => {
+test("execute should return context with execution result when called after add execution with promise", async () => {
   const subject = new ExecutionManager({
     test1: 1,
   }).addExecution({
-    contextKey: 'test2',
+    contextKey: "test2",
     call: () => {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve(2);
         }, 10);
@@ -60,11 +62,11 @@ test('execute should return context with execution result when called after add 
   });
 });
 
-test('addExecution should pass context to call ', async () => {
+test("addExecution should pass context to call ", async () => {
   const subject = new ExecutionManager({
     test1: 1,
   }).addExecution({
-    contextKey: 'test2',
+    contextKey: "test2",
     call: (context: Context) => {
       return {
         result1: context.test1,
@@ -84,32 +86,32 @@ test('addExecution should pass context to call ', async () => {
   });
 });
 
-test('addExecution should throw error when called with a non existent dependency', async () => {
+test("addExecution should throw error when called with a non existent dependency", async () => {
   const subject = new ExecutionManager();
 
   expect(() =>
     subject.addExecution({
-      contextKey: 'test1',
+      contextKey: "test1",
       call: () => {
         return 1;
       },
-      contextDependencies: ['test'],
+      contextDependencies: ["test"],
     })
   ).toThrowError();
 });
 
-test('execute should return context with executions result when called after add execution with dependency', async () => {
+test("execute should return context with executions result when called after add execution with dependency", async () => {
   const subject = new ExecutionManager({
     test1: 1,
   })
     .addExecution({
-      contextKey: 'test2',
+      contextKey: "test2",
       call: () => {
         return 2;
       },
     })
     .addExecution({
-      contextKey: 'test3',
+      contextKey: "test3",
       call: (context: Context) => {
         return {
           result1: context.test1,
@@ -117,7 +119,7 @@ test('execute should return context with executions result when called after add
           result3: 3,
         };
       },
-      contextDependencies: ['test1', 'test2'],
+      contextDependencies: ["test1", "test2"],
     });
 
   const result = await subject.execute();
@@ -133,12 +135,12 @@ test('execute should return context with executions result when called after add
   });
 });
 
-test('execute should return context with executions result when called after add execution with promises and dependencies', async () => {
+test("execute should return context with executions result when called after add execution with promises and dependencies", async () => {
   const subject = new ExecutionManager()
     .addExecution({
-      contextKey: 'test1',
+      contextKey: "test1",
       call: () => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           setTimeout(() => {
             resolve(1);
           }, 10);
@@ -146,9 +148,9 @@ test('execute should return context with executions result when called after add
       },
     })
     .addExecution({
-      contextKey: 'test2',
+      contextKey: "test2",
       call: () => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           setTimeout(() => {
             resolve(2);
           }, 15);
@@ -156,9 +158,9 @@ test('execute should return context with executions result when called after add
       },
     })
     .addExecution({
-      contextKey: 'test3',
+      contextKey: "test3",
       call: (context: Context) => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           setTimeout(() => {
             resolve({
               result1: context.test1,
@@ -168,7 +170,7 @@ test('execute should return context with executions result when called after add
           }, 5);
         });
       },
-      contextDependencies: ['test1', 'test2'],
+      contextDependencies: ["test1", "test2"],
     });
 
   const result = await subject.execute();
