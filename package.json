@@ -4,13 +4,12 @@
   "description": "A promise manager",
   "main": "./build/index.js",
   "module": "./build/index.mjs",
-  "types": "./index.d.ts",
+  "types": "./build/index.d.ts",
   "files": [
     "/build",
     "/LICENSE",
     "/README.md",
-    "/package.json",
-    "/index.d.ts"
+    "/package.json"
   ],
   "lint-staged": {
     "src/*.ts": [
@@ -22,7 +21,7 @@
     ".": {
       "require": "./build/index.js",
       "import": "./build/index.mjs",
-      "types": "./index.d.ts"
+      "types": "./build/index.d.ts"
     },
     "./package.json": "./package.json"
   },
