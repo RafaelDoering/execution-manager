@@ -29,7 +29,7 @@ const manager = new ExecutionManager();
 manager.addExecution({
   contextKey: 'test1',
   call: () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve(1);
       }, 10);
@@ -38,7 +38,7 @@ manager.addExecution({
 }).addExecution({
   contextKey: 'test2',
   call: () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve(2);
       }, 15);
@@ -47,7 +47,7 @@ manager.addExecution({
 }).addExecution({
   contextKey: 'test3',
   call: (context: Context) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
           result1: context.test1,
@@ -61,18 +61,10 @@ manager.addExecution({
 });
 
 // Get result
-const result = await subject.execute();
+const result = await manager.execute();
 
 console.log(result);
-// {
-//   test1: 1,
-//   test2: 2,
-//   test3: {
-//     result1: 1,
-//     result2: 2,
-//     result3: 3,
-//   },
-// }
+// { test1: 1, test2: 2, test3: { result1: 1, result2: 2, result3: 3 } }
 ```
 
 ## License

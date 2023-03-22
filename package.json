@@ -40,6 +40,7 @@
     "rollup": "rollup --config rollup.config.js",
     "test:watch": "jest --watch",
     "test": "jest --coverage",
+    "play": "nodemon --exec ts-node ./playground.ts",
     "prepublishOnly": "npm run test && npm run build",
     "prepare": "husky install"
   },
