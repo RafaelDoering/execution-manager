@@ -1,6 +1,6 @@
 import { expect, test } from "@jest/globals";
 
-import ExecutionManager, { Context } from "./index";
+import ExecutionManager from "./index";
 
 test("execute should return nothing when called without add execution", async () => {
   const subject = new ExecutionManager();
@@ -67,7 +67,7 @@ test("addExecution should pass context to call ", async () => {
     test1: 1,
   }).addExecution({
     contextKey: "test2",
-    call: (context: Context) => {
+    call: (context) => {
       return {
         result1: context.test1,
         result2: 2,
@@ -112,7 +112,7 @@ test("execute should return context with executions result when called after add
     })
     .addExecution({
       contextKey: "test3",
-      call: (context: Context) => {
+      call: (context) => {
         return {
           result1: context.test1,
           result2: context.test2,
@@ -159,7 +159,7 @@ test("execute should return context with executions result when called after add
     })
     .addExecution({
       contextKey: "test3",
-      call: (context: Context) => {
+      call: (context) => {
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve({

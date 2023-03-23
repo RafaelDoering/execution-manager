@@ -1,24 +1,25 @@
-export type Context = { [key: string]: unknown };
+export type BaseContext = Record<string, unknown>;
 
-export type Execution = {
-  contextKey: string;
-  call: (context: Context) => unknown;
+export type Execution<ContextKey extends string, Context, Result> = {
+  contextKey: ContextKey;
+  call: (context: Context) => Result;
   contextDependencies?: string[];
 };
 
-export default class ExecutionManager {
-  private context: Context = {};
-  private executionsByLevel: { [key: number]: Array<Execution> } = { 0: [] };
+export default class ExecutionManager<Context extends BaseContext> {
+  private context: Context;
+  private executionsByLevel: Record<
+    number,
+    Array<Execution<string, Context, unknown>>
+  > = { 0: [] };
 
   constructor(context?: Context) {
-    if (context) {
-      this.context = context;
-    }
-
-    return this;
+    this.context = context || ({} as Context);
   }
 
-  public addExecution(execution: Execution): ExecutionManager {
+  public addExecution<ContextKey extends string, Result>(
+    execution: Execution<ContextKey, Context, Result>
+  ): ExecutionManager<Context & Record<ContextKey, Awaited<Result>>> {
     if (execution.contextDependencies) {
       const dependenciesLevel: Array<number> = [];
       execution.contextDependencies.forEach((contextDependency: string) => {
@@ -51,7 +52,7 @@ export default class ExecutionManager {
       this.executionsByLevel[0].push(execution);
     }
 
-    return this;
+    return this as ExecutionManager<Context & Record<string, Awaited<Result>>>;
   }
 
   public async execute(): Promise<Context> {
@@ -63,10 +64,11 @@ export default class ExecutionManager {
       );
 
       for (const [index, response] of responses.entries()) {
-        this.context[executionInLevel[index].contextKey] = response;
+        (this.context as BaseContext)[executionInLevel[index].contextKey] =
+          response;
       }
     }
 
-    return this.context;
+    return this.context as unknown as Promise<Context>;
   }
 }
