@@ -1,6 +1,6 @@
 {
   "name": "execution-manager",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "A promise manager",
   "main": "./build/index.js",
   "module": "./build/index.mjs",
