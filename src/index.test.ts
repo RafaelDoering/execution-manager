@@ -46,7 +46,7 @@ test("execute should return context with execution result when called after add 
   }).addExecution({
     contextKey: "test2",
     call: () => {
-      return new Promise((resolve) => {
+      return new Promise<number>((resolve) => {
         setTimeout(() => {
           resolve(2);
         }, 10);
@@ -140,7 +140,7 @@ test("execute should return context with executions result when called after add
     .addExecution({
       contextKey: "test1",
       call: () => {
-        return new Promise((resolve) => {
+        return new Promise<number>((resolve) => {
           setTimeout(() => {
             resolve(1);
           }, 10);
@@ -150,7 +150,7 @@ test("execute should return context with executions result when called after add
     .addExecution({
       contextKey: "test2",
       call: () => {
-        return new Promise((resolve) => {
+        return new Promise<number>((resolve) => {
           setTimeout(() => {
             resolve(2);
           }, 15);
@@ -160,7 +160,11 @@ test("execute should return context with executions result when called after add
     .addExecution({
       contextKey: "test3",
       call: (context) => {
-        return new Promise((resolve) => {
+        return new Promise<{
+          result1: number;
+          result2: number;
+          result3: number;
+        }>((resolve) => {
           setTimeout(() => {
             resolve({
               result1: context.test1,
