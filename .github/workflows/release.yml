@@ -1,4 +1,4 @@
-name: Release on npm
+name: release
 
 on:
   push:
@@ -71,13 +71,11 @@ jobs:
       - name: Create release
         if: steps.publish.outputs.type != 'none'
         id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: v${{ steps.publish.outputs.version }}
-          release_name: v${{ steps.publish.outputs.version }}
-          commitish: ${{ github.ref }}
-          body: ${{steps.github_release.outputs.changelog}}
-          draft: false
-          prerelease: false
+          files: |
+            build
+            LICENSE
+            README.md
+            package.json
