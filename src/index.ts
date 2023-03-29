@@ -1,30 +1,39 @@
 export type BaseContext = Record<string, unknown>;
 
-export type Execution<ContextKey extends string, Context, Result> = {
+export type Execution<
+  ContextKey extends string,
+  Context extends BaseContext,
+  Result,
+  ContextDependenciesKeys extends string[]
+> = {
   contextKey: ContextKey;
-  call: (context: Context) => Result;
-  contextDependencies?: string[];
+  call: (context: Pick<Context, ContextDependenciesKeys[number]>) => Result;
+  contextDependencies?: ContextDependenciesKeys;
 };
 
-export default class ExecutionManager<Context extends BaseContext> {
+export default class ExecutionManager<Context extends BaseContext = {}> {
   private context: Context;
   private executionsByLevel: Record<
     number,
-    Array<Execution<string, Context, unknown>>
+    Array<Execution<any, Context, unknown, any>>
   > = { 0: [] };
 
   constructor(context?: Context) {
     this.context = context || ({} as Context);
   }
 
-  public addExecution<ContextKey extends string, Result>(
-    execution: Execution<ContextKey, Context, Result>
+  public addExecution<
+    ContextKey extends string,
+    Result,
+    ContextDependenciesKeys extends (keyof Context & string)[]
+  >(
+    execution: Execution<ContextKey, Context, Result, ContextDependenciesKeys>
   ): ExecutionManager<Context & Record<ContextKey, Awaited<Result>>> {
     if (execution.contextDependencies) {
       const dependenciesLevel: Array<number> = [];
       execution.contextDependencies.forEach((contextDependency: string) => {
         const executionsWithLevel = Object.entries(this.executionsByLevel);
-        const dependency = executionsWithLevel.find(([level, executions]) => {
+        for (const [level, executions] of executionsWithLevel) {
           const foundDependency = executions.find(
             (item) => item.contextKey === contextDependency
           );
@@ -32,12 +41,6 @@ export default class ExecutionManager<Context extends BaseContext> {
           if (foundDependency) {
             dependenciesLevel.push(+level);
           }
-
-          return foundDependency;
-        });
-
-        if (!dependency && !this.context[contextDependency]) {
-          throw "Dependencia não encontrada";
         }
       });
 
@@ -60,7 +63,7 @@ export default class ExecutionManager<Context extends BaseContext> {
 
     for (const executionInLevel of executionsByLevel) {
       const responses = await Promise.all(
-        executionInLevel.map((execution) => execution.call(this.context))
+        executionInLevel.map((execution) => execution.call(this.context as any))
       );
 
       for (const [index, response] of responses.entries()) {

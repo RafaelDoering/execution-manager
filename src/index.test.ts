@@ -86,20 +86,6 @@ test("addExecution should pass context to call ", async () => {
   });
 });
 
-test("addExecution should throw error when called with a non existent dependency", async () => {
-  const subject = new ExecutionManager();
-
-  expect(() =>
-    subject.addExecution({
-      contextKey: "test1",
-      call: () => {
-        return 1;
-      },
-      contextDependencies: ["test"],
-    })
-  ).toThrowError();
-});
-
 test("execute should return context with executions result when called after add execution with dependency", async () => {
   const subject = new ExecutionManager({
     test1: 1,
