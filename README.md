@@ -17,41 +17,94 @@ Using npm:
 $ npm install execution-manager
 ```
 
-## Example
+## Examples
 
+### Basic
 ```typescript
 import ExecutionManager from 'execution-manager';
 
 // Instantiate manager
 const manager = new ExecutionManager()
   .addExecution({
-    contextKey: "test1",
+    contextKey: 'test1',
     call: () => {
-      return new Promise<number>((resolve) => {
+      return 1;
+    },
+  }).addExecution({
+    contextKey: 'test2',
+    call: () => {
+      return 2;
+    },
+  });
+
+// Get result
+const result = await manager.execute();
+
+// { test1: 1, test2: 2 }
+console.log(result);
+```
+
+### Promises
+```typescript
+import ExecutionManager from 'execution-manager';
+
+// Instantiate manager
+const manager = new ExecutionManager()
+  .addExecution({
+    contextKey: 'test1',
+    call: () => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve(1);
         }, 10);
       });
     },
-  })
-  .addExecution({
-    contextKey: "test2",
+  }).addExecution({
+    contextKey: 'test2',
     call: () => {
-      return new Promise<number>((resolve) => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve(2);
         }, 15);
       });
     },
-  })
+  });
+
+// Get result
+const result = await manager.execute();
+
+// { test1: 1, test2: 2 }
+console.log(result);
+```
+
+### Dependencies
+```typescript
+import ExecutionManager from 'execution-manager';
+
+// Instantiate manager
+const manager = new ExecutionManager()
   .addExecution({
-    contextKey: "test3",
+    contextKey: 'test1',
+    call: () => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(1);
+        }, 10);
+      });
+    },
+  }).addExecution({
+    contextKey: 'test2',
+    call: () => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(2);
+        }, 15);
+      });
+    },
+  }).addExecution({
+    contextKey: 'test3',
     call: (context) => {
-      return new Promise<{
-        result1: number;
-        result2: number;
-        result3: number;
-      }>((resolve) => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve({
             result1: context.test1,
@@ -61,7 +114,7 @@ const manager = new ExecutionManager()
         }, 5);
       });
     },
-    contextDependencies: ["test1", "test2"],
+    contextDependencies: ['test1', 'test2'],
   });
 
 // Get result

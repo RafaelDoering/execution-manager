@@ -1,4 +1,4 @@
-import ExecutionManager, { Context } from "./src/index.ts";
+import ExecutionManager from "./src/index.ts";
 
 async function main() {
   // Instantiate manager
@@ -25,7 +25,7 @@ async function main() {
     },
   }).addExecution({
     contextKey: 'test3',
-    call: (context: Context) => {
+    call: (context) => {
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve({
